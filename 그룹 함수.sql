@@ -86,4 +86,44 @@ GROUP BY job_id;
 -- 부서, 업무별 조회
 SELECT department_id 부서번호, job_id 업무,  count(*) 인원수, SUM(salary) 급여합계, AVG(salary) 급여평균
 FROM employees
-GROUP BY job_id, department_id;
+GROUP BY department_id, job_id
+ORDER BY department_id, job_id;
+
+SELECT job_id 업무, department_id 부서번호, count(*) 인원수, SUM(salary) 급여합계, AVG(salary) 급여평균
+FROM employees
+GROUP BY department_id, job_id
+ORDER BY department_id, job_id;
+
+SELECT department_id 부서번호, job_id 업무,  count(*) 인원수, SUM(salary) 급여합계, AVG(salary) 급여평균
+FROM employees
+GROUP BY job_id, department_id
+ORDER BY department_id, job_id;
+
+SELECT job_id 업무, department_id 부서번호,  count(*) 인원수, SUM(salary) 급여합계, AVG(salary) 급여평균
+FROM employees
+GROUP BY job_id, department_id
+ORDER BY department_id, job_id;
+
+-- HAVING 절
+SELECT department_id 부서번호, count(*) 인원수, SUM(salary) 급여합계 FROM employees
+GROUP BY department_id
+HAVING count(*) > 4;
+
+SELECT department_id 부서번호, AVG(salary) 급여평균, SUM(salary) 급여합계 FROM employees
+GROUP BY department_id
+HAVING MAX(salary) >= 9500;
+
+-- having절의 위치는 group by 다음에 쓸 것을 권장
+SELECT job_id, avg(salary), SUM(salary) FROM employees GROUP BY job_id having avg(salary) >= 3000;
+SELECT job_id, avg(salary), SUM(salary) FROM employees HAVING AVG(salary) >= 3000 GROUP BY job_id;
+
+-- 미리 거를건 WHERE절에 쓰는 것이 좋음
+SELECT department_id, SUM(salary) FROM employees GROUP BY department_id HAVING SUM(salary) > 10000 AND department_id IN (20,30);
+SELECT department_id, SUM(salary) FROM employees WHERE department_id IN (20,30) GROUP BY department_id HAVING SUM(salary) > 10000;
+
+SELECT department_id, AVG(salary) FROM employees WHERE job_id='FI_MGR' GROUP BY department_id HAVING AVG(salary) > 3000;
+-- 그룹 짓고 난 이후에 job_id가 없기 때문에 오류 발생
+SELECT department_id, AVG(salary) FROM employees GROUP BY department_id HAVING AVG(salary) > 3000 AND job_id='FI_MGR';
+
+-- 부서 급여 합계 중 최대값 조회
+SELECT MAX(SUM(salary)) FROM employees GROUP BY department_id;
