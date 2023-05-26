@@ -127,3 +127,56 @@ SELECT department_id, AVG(salary) FROM employees GROUP BY department_id HAVING A
 
 -- 부서 급여 합계 중 최대값 조회
 SELECT MAX(SUM(salary)) FROM employees GROUP BY department_id;
+
+SELECT department_id, COUNT(department_id) FROM employees GROUP BY department_id;
+
+SELECT first_name, hire_date, MIN(hire_date) FROM employees WHERE department_id = 20 GROUP BY first_name, hire_date;
+
+SELECT MIN(hire_date) FROM employees WHERE department_id=20;
+
+SELECT MIN(hire_date) FROM employees;
+
+SELECT LISTAGG(first_name, '; ')
+    WITHIN GROUP(ORDER BY first_name desc) "firstName",
+    LISTAGG(hire_date, '; ')
+    WITHIN GROUP(ORDER BY first_name desc) "hireDate",
+    MIN(hire_date) "Earliest"
+FROM employees
+WHERE department_id=20;
+
+SELECT LISTAGG(first_name, ' / ')
+    WITHIN GROUP(ORDER BY first_name desc) "firstName",
+    LISTAGG(hire_date, '; ')
+    WITHIN GROUP(ORDER BY hire_date desc) "hireDate",
+    MIN(hire_date) "Earliest"
+FROM employees
+WHERE department_id=20;
+
+SELECT department_id Dpts, LISTAGG(first_name, ' / ')
+    WITHIN GROUP(ORDER BY hire_date) Employees,
+    LISTAGG(salary , ',')
+    WITHIN GROUP(ORDER BY hire_date) Salarys
+FROM employees
+GROUP BY department_id;
+
+SELECT department_id "Dept.", hire_date "Date", first_name Name, 
+LISTAGG(first_name, ' / ')
+WITHIN GROUP(ORDER BY hire_date, first_name)
+OVER (PARTITION BY department_id) Emp_list
+FROM employees
+WHERE hire_date <= '2003-09-01'
+ORDER BY "Dept.", "Date", Name;
+
+SELECT department_id, SUM(salary), LISTAGG(first_name, ' / ')
+WITHIN GROUP(ORDER BY salary) first_name
+FROM employees
+GROUP BY department_id;
+
+SELECT department_id, COUNT(*), SUM(salary) FROM employees GROUP BY department_id;
+SELECT department_id, COUNT(*), SUM(salary) FROM employees GROUP BY ROLLUP(department_id);
+
+SELECT department_id, job_id, SUM(salary) FROM employees GROUP BY ROLLUP(job_id, department_id);
+
+-- 0 return : 실제 data인 경우
+-- 1 return : 실제 data가 아닌 경우
+SELECT department_id, job_id, manager_id, SUM(salary),grouping(department_id), grouping(job_id), grouping(manager_id) FROM employees GROUP BY ROLLUP(department_id, job_id, manager_id);
