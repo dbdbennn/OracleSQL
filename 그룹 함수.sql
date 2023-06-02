@@ -136,6 +136,7 @@ SELECT MIN(hire_date) FROM employees WHERE department_id=20;
 
 SELECT MIN(hire_date) FROM employees;
 
+-- LISTAGG
 SELECT LISTAGG(first_name, '; ')
     WITHIN GROUP(ORDER BY first_name desc) "firstName",
     LISTAGG(hire_date, '; ')
@@ -171,12 +172,62 @@ SELECT department_id, SUM(salary), LISTAGG(first_name, ' / ')
 WITHIN GROUP(ORDER BY salary) first_name
 FROM employees
 GROUP BY department_id;
-
+--------------------------------------------------------------------------------
+-- ROLLUP
 SELECT department_id, COUNT(*), SUM(salary) FROM employees GROUP BY department_id;
 SELECT department_id, COUNT(*), SUM(salary) FROM employees GROUP BY ROLLUP(department_id);
 
+-- ROLLUP -> UNION ALL
+SELECT department_id, COUNT(*), SUM(salary) FROM employees GROUP BY department_id
+UNION ALL
+SELECT NULL department_id, COUNT(*), SUM(salary) FROM employees ORDER BY department_id;
+
+--------------------------------------------------------------------------------
+
+-- ROLLUP
+SELECT department_id, job_id, SUM(salary) FROM employees GROUP BY ROLLUP(department_id, job_id);
+
+-- ROLLUP -> UNION ALL
+SELECT department_id, job_id, SUM(salary) FROM employees GROUP BY (department_id, job_id)
+UNION ALL
+SELECT department_id, NULL job_id, SUM(salary) FROM employees GROUP BY department_id
+UNION ALL
+SELECT NULL department_id, NULL job_id, SUM(salary) FROM employees;
+
+--------------------------------------------------------------------------------
+
+-- ROLLUP
 SELECT department_id, job_id, SUM(salary) FROM employees GROUP BY ROLLUP(job_id, department_id);
+
+-- ROLLUP -> UNION ALL
+SELECT department_id, job_id, SUM(salary) FROM employees GROUP BY (job_id, department_id)
+UNION ALL
+SELECT NULL department_id, job_id, SUM(salary) FROM employees GROUP BY job_id
+UNION ALL
+SELECT NULL department_id, NULL job_id, SUM(salary) FROM employees;
+
+--------------------------------------------------------------------------------
+
+-- ROLLUP
+SELECT department_id, job_id, manager_id, SUM(salary)
+FROM employees
+GROUP BY ROLLUP(department_id, job_id, manager_id);
+
+-- ROLLUP -> UNION ALL
+SELECT department_id, job_id, manager_id, SUM(salary) FROM employees GROUP BY (department_id, job_id, manager_id)
+UNION ALL
+SELECT department_id, job_id, NULL manager_id, SUM(salary) FROM employees GROUP BY (department_id, job_id)
+UNION ALL
+SELECT department_id, NULL job_id, NULL manager_id, SUM(salary) FROM employees GROUP BY (department_id)
+UNION ALL
+SELECT NULL department_id, NULL job_id, NULL manager_id, SUM(salary) FROM employees ORDER BY department_id;
+
+--------------------------------------------------------------------------------
 
 -- 0 return : 실제 data인 경우
 -- 1 return : 실제 data가 아닌 경우
-SELECT department_id, job_id, manager_id, SUM(salary),grouping(department_id), grouping(job_id), grouping(manager_id) FROM employees GROUP BY ROLLUP(department_id, job_id, manager_id);
+SELECT department_id, job_id, manager_id, SUM(salary), 
+GROUPING(department_id), GROUPING(job_id), GROUPING(manager_id)
+FROM employees GROUP BY ROLLUP(department_id, job_id, manager_id);
+
+COMMIT;
