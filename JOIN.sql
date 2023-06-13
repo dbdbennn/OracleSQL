@@ -77,12 +77,18 @@ WHERE employees.department_id = departments.department_id
 GROUP BY departments.department_name
 ORDER BY departments.department_name; 
 
+--------------------------------------------------------------------------------
+--NON-EQUI JOIN
+
+SELECT employees.employee_id, employees.first_name, employees.job_id, salary, job_title, min_salary, max_salary
+FROM employees, jobs
+WHERE employees.salary BETWEEN min_salary AND max_salary
+AND employees.job_id = jobs.job_id
+ORDER BY job_id;
 
 
 
 commit;
-
-
 
 
 
