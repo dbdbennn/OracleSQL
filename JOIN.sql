@@ -41,3 +41,59 @@ FROM employees, departments, jobs
 WHERE employees.department_id = departments.department_id 
 and jobs.job_id = employees.job_id
 and job_title LIKE '%Manager';
+
+-- Michael이라는 이름을 가진 사람의 정보.
+SELECT employees.first_name, locations.city, locations.state_province 
+FROM employees, locations, departments
+WHERE employees.department_id = departments.department_id 
+and departments.location_id = locations.location_id
+and first_name = 'Michael';
+
+-- 부서명과 부서별 업무코드 및 각 부서별 CLERK 업무코드(_CLERK)를 가진 사람의 수 조회
+SELECT departments.department_name, employees.job_id, count(*) 인원수
+FROM employees, departments
+-- SELECT->FROM->WHERE->GROUP BY
+WHERE employees.job_id LIKE '%CLERK'
+and employees.department_id = departments.department_id
+-- 부서명과 업무코드에 따른 GROUP BY임
+GROUP BY (departments.department_name, employees.job_id)
+ORDER BY departments.department_name;
+
+-- 테이블 세 개 사용
+SELECT departments.department_name, jobs.job_id, count(*) 인원수
+FROM employees, departments, jobs
+-- SELECT->FROM->WHERE->GROUP BY
+WHERE employees.job_id LIKE '%CLERK'
+and employees.department_id = departments.department_id
+and employees.job_id = jobs.job_id
+-- 부서명과 업무코드에 따른 GROUP BY임
+GROUP BY (departments.department_name, jobs.job_id)
+ORDER BY departments.department_name, jobs.job_id;
+
+-- 각 부서별 평균 급여 조회
+SELECT departments.department_name, TRUNC(AVG(employees.salary)) 평균급여
+FROM departments, employees
+WHERE employees.department_id = departments.department_id
+GROUP BY departments.department_name
+ORDER BY departments.department_name; 
+
+
+
+
+commit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
