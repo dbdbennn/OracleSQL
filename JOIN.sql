@@ -86,7 +86,46 @@ WHERE employees.salary BETWEEN min_salary AND max_salary
 AND employees.job_id = jobs.job_id
 ORDER BY job_id;
 
+SELECT employees.employee_id, first_name, employees.job_id, employees.department_id, departments.department_id, departments.department_name
+FROM employees, departments
+-- departments에 (+) => employees가 기준이 됨.
+-- employees에 (+) => departments가 기준이 됨.
+WHERE employees.department_id = departments.department_id(+)
+ORDER By departments.department_id;
 
+SELECT * FROM departments;
+
+--------------------------------------------------------------------------------
+
+SELECT department_id, department_name, city
+FROM departments, locations
+WHERE departments.location_id = locations.location_id(+)
+ORDER BY 1;
+
+SELECT department_id, department_name, city
+FROM departments, locations
+WHERE departments.location_id(+) = locations.location_id
+ORDER BY 1;
+
+SELECT department_id, department_name, locations.location_id, city
+FROM departments, locations
+WHERE departments.location_id(+) = locations.location_id
+UNION ALL
+SELECT department_id, department_name, locations.location_id, city
+FROM departments, locations
+WHERE departments.location_id = locations.location_id(+) 
+ORDER BY 1;
+
+--------------------------------------------------------------------------------
+
+-- 합치기
+SELECT employee_id, first_name, job_id, emp.department_id, dept.department_id, department_name
+FROM employees emp, departments dept
+WHERE emp.department_id = dept.department_id(+)
+UNION
+SELECT employee_id, first_name, job_id, emp.department_id, dept.department_id, department_name
+FROM employees emp, departments dept
+WHERE emp.department_id(+) = dept.department_id;
 
 commit;
 
