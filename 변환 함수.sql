@@ -1,3 +1,5 @@
+@C:\Users\User\Desktop\학교수업\OracleDB\OracleSQL\20230331.sql;
+
 SELECT department_id, employee_id, first_name, job_id, salary, 
 to_char(salary, '999,999') "c_sal" -- 3자리마다 , 출력
 FROM employees

@@ -1,3 +1,5 @@
+@C:\Users\User\Desktop\학교수업\OracleDB\OracleSQL\20230331.sql;
+
 -- EQJOIN
 
 SELECT employees.first_name, employees.department_id, departments.department_id, departments.department_name 
@@ -127,9 +129,25 @@ SELECT employee_id, first_name, job_id, emp.department_id, dept.department_id, d
 FROM employees emp, departments dept
 WHERE emp.department_id(+) = dept.department_id;
 
-commit;
+-- SELF JOIN
 
+-- Ellen의 Manager의 이름을 찾는법
+-- 사원 테이블에서 first_name이 Ellen인 데이터 검색(emp.first_name = 'Ellen')
+-- 사원 테이블에서 Ellen의 manager_id 검색
+-- 관리자 테이블에서 사원테이블의 manager_id에 해당되는 employee_id 검색
+-- 관리자 테이블에서 employee_id에 해당하는 first_name 조회
 
+SELECT emp.employee_id 사원번호, emp.first_name 사원명, emp.manager_id 관리자번호, man.first_name 관리자명
+FROM employees emp, employees man
+WHERE emp.manager_id = man.employee_id(+);
+-- manager가 null인 사람도 띄워라(그럼 emp 테이블이 다 나와야하니까 man 테이블에 +)
+
+-- 사원명 뒤에 '관리자는' 문자열을 결합하여 관리자명(관리자정보)이 나오도록 조회(관리자가 없는 사원도 결과에 나오도록 한다)하여 사원명 순으로 정렬
+-- 두 개의 열이름 사이에 ||를 작성해주거나 문자 사이에 ||를 작성 해줌으로써 두 개 이상의 문자열을 합쳐서 출력 가능
+SELECT emp.first_name || ' 관리자는 ' || man.first_name 관리자정보
+FROM employees emp, employees man
+WHERE emp.manager_id = man.employee_id(+)
+ORDER BY emp.first_name;
 
 
 
