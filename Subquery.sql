@@ -46,6 +46,42 @@ AND
 AND 
     salary > (SELECT salary FROM employees WHERE first_name = 'Clara');
 
+-- GROUP BY
+SELECT department_id, MIN(salary) 
+FROM employees 
+GROUP BY department_id
+HAVING 
+    MIN(salary) > (SELECT MIN(salary) FROM employees WHERE department_id = 80);
+    
+SELECT 
+    first_name 사원명, 
+    salary 급여, 
+    emp.job_id 업무명, 
+    avg_sal 평균급여,
+    DECODE(SIGN(salary-avg_sal*1.1), 1, salary*0.05, 0) 차감액,
+    salary- DECODE(SIGN(salary-avg_sal*1.1), 1, salary*0.05, 0) 실수령액
+FROM 
+    employees emp, 
+    (SELECT job_id, AVG(salary) avg_sal FROM employees GROUP BY job_id) avg_tbl
+WHERE 
+    emp.job_id = avg_tbl.job_id
+AND salary > avg_sal;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
